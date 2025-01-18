@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 builder.Services.AddCors(options => {
-    options.AddPolicy("ListaGatto", builder => {
+    options.AddPolicy("List", builder => {
         builder
             .AllowAnyOrigin()
             .AllowAnyMethod()
@@ -50,7 +50,7 @@ var summaries = new[]
 
 app.MapControllers();
 
-app.UseCors("ListaGatto");
+app.UseCors("List");
 
 app.Run();
 

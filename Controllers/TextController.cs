@@ -23,13 +23,13 @@ namespace Back.Controllers
         }
         
 
-        [HttpGet("/get")]
+        [HttpGet("")]
         public ActionResult Get() {
             var ToDoList = GetToDoList();
             return Ok(ToDoList);
         }
 
-        [HttpPost("/insert")]
+        [HttpPost("")]
         public ActionResult Post([FromBody] ListItemDto model) {            
             var ToDoList = GetToDoList();
             ToDoList.Add(model);
@@ -38,7 +38,7 @@ namespace Back.Controllers
             return Ok("Text inserted");
         }
 
-        [HttpPut("/update/{index}")]
+        [HttpPut("/{index}")]
         public ActionResult Update([FromRoute] int index, [FromBody] ListItemDto novaModel) {
             var ToDoList = GetToDoList();
 
@@ -52,7 +52,7 @@ namespace Back.Controllers
             return Ok("Text updated.");
         }
 
-        [HttpDelete("/delete/{index}")]
+        [HttpDelete("/{index}")]
         public ActionResult Delete([FromRoute] int index) {
             var ToDoList = GetToDoList();
 
