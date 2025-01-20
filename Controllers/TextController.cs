@@ -24,8 +24,25 @@ namespace Back.Controllers
         
 
         [HttpGet("")]
-        public ActionResult Get() {
+        public ActionResult Get([FromQuery] string? filter = null) {
             var ToDoList = GetToDoList();
+
+            // Filter logic based on the parameter
+            if (!string.IsNullOrEmpty(filter))
+            {
+                switch (filter.ToLower())
+                {
+                    case "checked":
+                        ToDoList = ToDoList.Where(item => item.Checked).ToList();
+                        break;
+                    case "unchecked":
+                        ToDoList = ToDoList.Where(item => !item.Checked).ToList();
+                        break;
+                    default:
+                        return BadRequest("Invalid filter parameter. Use 'checked' or 'unchecked'.");
+                }
+            }
+
             return Ok(ToDoList);
         }
 
@@ -38,7 +55,7 @@ namespace Back.Controllers
             return Ok("Text inserted");
         }
 
-        [HttpPut("/{index}")]
+        [HttpPut("{index}")]
         public ActionResult Update([FromRoute] int index, [FromBody] ListItemDto novaModel) {
             var ToDoList = GetToDoList();
 
@@ -52,7 +69,7 @@ namespace Back.Controllers
             return Ok("Text updated.");
         }
 
-        [HttpDelete("/{index}")]
+        [HttpDelete("{index}")]
         public ActionResult Delete([FromRoute] int index) {
             var ToDoList = GetToDoList();
 
@@ -65,41 +82,17 @@ namespace Back.Controllers
             return Ok("Text deleted.");
         }
 
-        // request que filtra apenas os checkados e os nao checkados
-        [HttpGet("/filter")]
-        public ActionResult GetFilteredItems([FromQuery] string filter) {
-            var ToDoList = GetToDoList();
-
-            if (!string.IsNullOrEmpty(filter)) {
-                switch (filter) {
-                    case "checked":
-                        ToDoList = ToDoList.Where(item => item.Checked).ToList();
-                        break;
-                    case "unchecked":
-                        ToDoList = ToDoList.Where(item => !item.Checked).ToList();
-                        break;
-                    default:
-                        return BadRequest("Filter parameter invalid");
- 
-                }
-            }
-
-            return Ok(ToDoList);
-        }
-
         // [HttpGet("/filter")]
         // public ActionResult Filter([FromQuery] bool? isChecked) {
-        //     var MinhaLista = GetMinhaLista();
-
+        //     var List = GetList();
         //     if (isChecked.HasValue)
         //     {
-        //         MinhaLista = MinhaLista.Where(item => item.Checked == isChecked.Value).ToList();
+        //         List = List.Where(item => item.Checked == isChecked.Value).ToList();
         //     }
-
-        //     return Ok(MinhaLista);
+        //     return Ok(List);
         // }
 
-        // autenticação jwt
+        // add jwt authentication
 
         private List<ListItemDto> GetToDoList() {
             if (!_memoryCache.TryGetValue(cacheKey, out List<ListItemDto> ToDoList))
@@ -116,6 +109,6 @@ namespace Back.Controllers
 
             return ToDoList;
         }
-        // esse private estaria em uma camada de service
+        // put this private in a service layer
     }
 }
